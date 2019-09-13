@@ -32,9 +32,8 @@ const GlobalState = (props) => {
       updatedItem.quantity++;
       updatedCart[updatedItemIndex] = updatedItem;
     }
-    setTimeout(() => {
-      updateCart(updatedCart);
-    }, 700);
+
+    updateCart(updatedCart);
   }
 
   const removeProductFromCart = productId => {
@@ -52,24 +51,23 @@ const GlobalState = (props) => {
       updatedCart.splice(updatedItemIndex, 1);
     } else {
       updatedCart[updatedItemIndex] = updatedItem;
-    }
-    setTimeout(() => {
-      updateCart(updatedCart);
-    }, 700);
-  };
 
-  return (
-    <ShopContext.Provider
-      value={{
-        products,
-        cart,
-        addProductToCart,
-        removeProductFromCart
-      }}
-    >
-      {props.children}
-    </ShopContext.Provider>
-  )
+      updateCart(updatedCart);
+    };
+
+    return (
+      <ShopContext.Provider
+        value={{
+          products,
+          cart,
+          addProductToCart,
+          removeProductFromCart
+        }}
+      >
+        {props.children}
+      </ShopContext.Provider>
+    )
+  }
 }
 
 export default GlobalState;
