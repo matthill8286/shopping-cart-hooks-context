@@ -9,9 +9,9 @@ import Spinner from '../Spinner';
 import StoreHeader from './StoreHeader';
 import ProductList from './ProductList';
 
+import { conversionSelector, shelfSelector } from '../../selectors/selectors';
+
 import './style.scss';
-import { conversionSelector } from '../../services/conversion/selectors';
-import { shelfSelector } from '../../services/shelf/selectors';
 
 class Store extends Component {
   static propTypes = {

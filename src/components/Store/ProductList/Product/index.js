@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { formatPrice } from '../../../../services/util';
+import { formatPrice } from '../../../../selectors/util';
 import { defaultMemoize } from 'reselect';
 
 const Product = ({ product, addProduct, conversion }) => {

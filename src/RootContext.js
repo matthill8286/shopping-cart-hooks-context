@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import GlobalState from './context/GlobalState';
 import ProductsPage from './pages/Products/Products';
-import CartPage from './pages/Cart/Cart';
+import CartPage from './pages/Cart';
 
 export default class RootContext extends Component {
   render() {
