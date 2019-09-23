@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { formatPrice } from '../../../selectors/util';
+import Thumb from '../../Thumb';
 
 function CartProduct({ product, removeProduct }) {
 
@@ -28,6 +29,11 @@ function CartProduct({ product, removeProduct }) {
         onMouseOver={() => handleMouseOver()}
         onMouseOut={() => handleMouseOut()}
         onClick={() => removeProduct()}
+      />
+      <Thumb
+        classes="shelf-item__thumb"
+        src={require(`../../../static/products/${product.sku}_2.jpg`)}
+        alt={product.title}
       />
       <div className="shelf-item__details">
         <p className="title">{product.title}</p>

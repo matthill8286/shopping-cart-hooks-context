@@ -22,7 +22,7 @@ class Cart extends PureComponent {
   };
 
   state = {
-    isOpen: false
+    isOpen: true
   };
 
   get getCartTotal() {
@@ -34,6 +34,12 @@ class Cart extends PureComponent {
     const { cart } = this.context;
     return cart.reduce((count, curItem) => {
       return count + curItem.quantity;
+    }, 0)
+  }
+  get getCartTotalPrice() {
+    const { cart } = this.context;
+    return cart.reduce((count, curItem) => {
+      return count + curItem.quantity * curItem.price;
     }, 0)
   }
 
@@ -178,7 +184,7 @@ class Cart extends PureComponent {
               <div className="sub">SUBTOTAL</div>
               <div className="sub-price">
                 <p className="sub-price__val">
-                  {formatPrice(this.getCartTotal)}
+                  {formatPrice(this.getCartTotalPrice)}
                 </p>
               </div>
               <div onClick={() => this.proceedToCheckout()} className="buy-btn">
