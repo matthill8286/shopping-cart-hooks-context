@@ -1,20 +1,17 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import ShopContext from '../../context/shop-context';
 
-import { connect } from 'react-redux';
-import { loadCart, removeProduct } from '../../services/cart/actions';
-import * as CartSelectors from '../../services/cart/selectors'
-import { updateCart } from '../../services/total/actions';
 import CartProduct from './CartProduct';
 
-import { formatPrice } from '../../services/util';
+import { formatPrice } from '../../selectors/util';
 
 import './style.scss';
-import { totalSelector } from '../../services/total/selectors';
-import { conversionSelector } from '../../services/conversion/selectors';
-
+import MainNavigation from '../MainNavigation/MainNavigation';
 
 class Cart extends PureComponent {
+  static contextType = ShopContext;
+
   static propTypes = {
     loadCart: PropTypes.func.isRequired,
     updateCart: PropTypes.func.isRequired,
@@ -29,8 +26,15 @@ class Cart extends PureComponent {
   };
 
   get getCartTotal() {
-    const { cartTotal, conversion } = this.props;
-    return cartTotal.totalPrice * conversion.value
+    const { cart } = this.context;
+    return cart.length
+  }
+
+  get getCartItems() {
+    const { cart } = this.context;
+    return cart.reduce((count, curItem) => {
+      return count + curItem.quantity;
+    }, 0)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -101,17 +105,22 @@ class Cart extends PureComponent {
     }
   };
 
+  removeFromCart = (id) => {
+    const { removeProductFromCart } = this.context;
+    return removeProductFromCart(id)
+  }
+
   render() {
-    const { cartTotal, cartProducts, removeProduct, conversion } = this.props;
+    const { cart } = this.context;
     const { isOpen } = this.state
 
-    const products = cartProducts.map(product => {
+    const products = cart.map(product => {
       return (
         <CartProduct
           product={product}
-          removeProduct={removeProduct}
+          removeProduct={this.removeFromCart.bind(this, product.id)}
           key={product.id}
-          conversion={conversion} />
+        />
       );
     });
 
@@ -122,71 +131,65 @@ class Cart extends PureComponent {
     }
 
     return (
-      <div className={classes.join(' ')}>
-        {/* If cart open, show close (x) button */}
-        {isOpen && (
-          <div
-            onClick={() => this.closeCart()}
-            className="float-cart__close-btn"
-          >
-            X
+      <React.Fragment>
+        <MainNavigation
+          cartItemNumber={this.getCartItems}
+        />
+        <div className={classes.join(' ')}>
+          {/* If cart open, show close (x) button */}
+          {isOpen && (
+            <div
+              onClick={() => this.closeCart()}
+              className="float-cart__close-btn"
+            >
+              X
           </div>
-        )}
+          )}
 
-        {/* If cart is closed, show bag with quantity of product and open cart action */}
-        {!isOpen && (
-          <span
-            onClick={() => this.openCart()}
-            className="bag bag--float-cart-closed"
-          >
-            <span className="bag__quantity">{cartTotal.productQuantity}</span>
-          </span>
-        )}
-
-        <div className="float-cart__content">
-          <div className="float-cart__header">
-            <span className="bag">
-              <span className="bag__quantity">{cartTotal.productQuantity}</span>
+          {/* If cart is closed, show bag with quantity of product and open cart action */}
+          {!isOpen && (
+            <span
+              onClick={() => this.openCart()}
+              className="bag bag--float-cart-closed"
+            >
+              <span className="bag__quantity">{this.getCartItems}</span>
             </span>
-            <span className="header-title">Cart</span>
-          </div>
+          )}
 
-          <div className="float-cart__shelf-container">
-            {products}
-            {!products.length && (
-              <p className="shelf-empty">
-                Add some products in the cart <br />
-                :)
-              </p>
-            )}
-          </div>
-
-          <div className="float-cart__footer">
-            <div className="sub">SUBTOTAL</div>
-            <div className="sub-price">
-              <p className="sub-price__val">
-                {conversion.currencyId} {formatPrice(this.getCartTotal)}
-              </p>
+          <div className="float-cart__content">
+            <div className="float-cart__header">
+              <span className="bag">
+                <span className="bag__quantity">{this.getCartItems}</span>
+              </span>
+              <span className="header-title">Cart</span>
             </div>
-            <div onClick={() => this.proceedToCheckout()} className="buy-btn">
-              Checkout
+
+            <div className="float-cart__shelf-container">
+              {products}
+              {!products.length && (
+                <p className="shelf-empty">
+                  Add some products in the cart <br />
+                  :)
+              </p>
+              )}
+            </div>
+
+            <div className="float-cart__footer">
+              <div className="sub">SUBTOTAL</div>
+              <div className="sub-price">
+                <p className="sub-price__val">
+                  {formatPrice(this.getCartTotal)}
+                </p>
+              </div>
+              <div onClick={() => this.proceedToCheckout()} className="buy-btn">
+                Checkout
+            </div>
             </div>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  cartProducts: CartSelectors.cartSelector(state).products,
-  newProduct: CartSelectors.cartSelector(state).productToAdd,
-  productToRemove: CartSelectors.cartSelector(state).productToRemove,
-  cartTotal: totalSelector(state).data,
-  conversion: conversionSelector(state)
-});
-
-export default connect(
-  mapStateToProps,
-  { loadCart, updateCart, removeProduct }
-)(Cart);
+export default Cart;

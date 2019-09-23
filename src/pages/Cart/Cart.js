@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ShopContext from '../../context/shop-context';
 import MainNavigation from '../../components/MainNavigation/MainNavigation';
 
-// import './Cart.css';
+import './styles.scss';
 
 class CartPage extends Component {
   static contextType = ShopContext;

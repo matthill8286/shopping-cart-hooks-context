@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { formatPrice } from '../../../services/util';
+import { formatPrice } from '../../../selectors/util';
 
-function CartProduct({ conversion, product, removeProduct }) {
+function CartProduct({ product, removeProduct }) {
 
   const [isMouseOver, setMouseOver] = useState(false)
 
@@ -27,14 +27,14 @@ function CartProduct({ conversion, product, removeProduct }) {
         className="shelf-item__del"
         onMouseOver={() => handleMouseOver()}
         onMouseOut={() => handleMouseOut()}
-        onClick={() => removeProduct(product)}
+        onClick={() => removeProduct()}
       />
       <div className="shelf-item__details">
         <p className="title">{product.title}</p>
         <p className="desc">Quantity: {product.quantity}</p>
       </div>
       <div className="shelf-item__price">
-        <p>{`${conversion.currencyId}  ${formatPrice(product.price * conversion.value)}`}</p>
+        <p>{formatPrice(product.price)}</p>
       </div>
     </div>
   ) : null;

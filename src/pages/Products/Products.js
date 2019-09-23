@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import ShopContext from '../../context/shop-context';
 import MainNavigation from '../../components/MainNavigation/MainNavigation';
+import ProductList from '../../components/Store/ProductList'
+
+import './styles.scss'
 
 class Products extends Component {
   render() {
@@ -14,23 +17,8 @@ class Products extends Component {
                 return count + curItem.quantity;
               }, 0)}
             />
-            <main className="products">
-              <ul>
-                {context.products.map(product => (
-                  <li key={product.id}>
-                    <div>
-                      <strong>{product.title}</strong> - ${product.price}
-                    </div>
-                    <div>
-                      <button
-                        onClick={context.addProductToCart.bind(this, product)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            <main className="shelf-container">
+              <ProductList products={context.products} addProduct={context.addProductToCart} conversion={1} />
             </main>
           </React.Fragment>
         )}
