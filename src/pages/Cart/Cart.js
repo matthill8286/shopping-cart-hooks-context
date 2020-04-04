@@ -8,10 +8,6 @@ import './styles.scss';
 class CartPage extends Component {
   static contextType = ShopContext;
 
-  componentDidMount() {
-    console.log(this.context);
-  }
-
   render() {
     return (
       <React.Fragment>
